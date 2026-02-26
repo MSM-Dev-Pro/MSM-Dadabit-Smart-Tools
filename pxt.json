@@ -1,7 +1,7 @@
 {
-  "name": "Msmdadabit", 
-  "version": "0.0.11",
-  "description": "MSM AI Handler (DaDa:bit + WonderCam) - blocs utilitaires pour suivi de ligne + saisie + depot",
+  "name": "msm-smart-tools",
+  "version": "0.0.14",
+  "description": "MSM Smart Tools - DaDa:bit + WonderCam + Thymio - Outils pédagogiques pour robotique éducative (ligne, vision, bras/pince, mission).",
   "license": "MIT",
   "dependencies": {
     "core": "*",
@@ -9,7 +9,9 @@
     "dadabit": "github:hiwonder/DaDabit"
   },
   "files": [
-    "main.ts"
+    "main.ts",
+    "icon.png"
   ],
-  "public": true
+  "public": true,
+  "icon": "./icon.png"
 }
