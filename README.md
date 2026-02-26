@@ -1,4 +1,4 @@
-# msmdadabit — MSM AI Handler (DaDa:bit + WonderCam)
+# msmdadabit — MSM Smart Tools (DaDa:bit + WonderCam)
 
 Extension MakeCode (micro:bit) pour le robot **DaDa:bit** (Hiwonder) avec la **WonderCam**, dédiée au projet **AI Handler** :
 - **Suivi de ligne** (4 capteurs) — mode compétition (robuste & testé)
@@ -13,8 +13,8 @@ Extension MakeCode (micro:bit) pour le robot **DaDa:bit** (Hiwonder) avec la **W
 
 1. Ouvre MakeCode micro:bit
 2. **Extensions** → colle l’URL du dépôt :
-   - `https://github.com/Elmahni17974175/msmdadabit`
-3. Valide, puis tu verras les blocs **msmdadabit** dans la boîte à outils.
+   - `https://github.com/MSM-Dev-Pro/MSM-Dadabit-Smart-Tools`
+3. Valide, puis tu verras les blocs **msmsmarttools** dans la boîte à outils.
 
 ---
 
