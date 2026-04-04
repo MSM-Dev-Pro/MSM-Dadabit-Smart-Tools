@@ -19,7 +19,7 @@ namespace msmSmartTools {
     // =========================================================
     let capteur1 = false
     let capteur2 = false
-    let capteur3 = false 
+    let capteur3 = false
     let capteur4 = false
 
     // vitesses
