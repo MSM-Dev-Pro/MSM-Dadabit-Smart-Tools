@@ -14,55 +14,33 @@
 //% groups='["Init","Réglages","Capteurs ligne","Mouvements","Suivi de ligne","Vision (couleur)","Vision (chiffres)","Bras & Pince","Mission"]'
 namespace msmSmartTools {
 
-    // =========================================================
-    // ÉTAT INTERNE
-    // =========================================================
     let capteur1 = false
     let capteur2 = false
     let capteur3 = false
     let capteur4 = false
-
-    // vitesses
     let vitesseToutDroit = 55
     let vitesseCorrection = 44
     let petiteVitesse = 33
-
-    // vision couleur
     let ID_CUBE = 1
     let X_MIN = 80
     let X_MAX = 240
     let Y_APPROCHE = 237
     let SEUIL_VALIDATION = 8
-
-    // compteurs stabilité (1 par couleur)
     let compteurStableR = 0
     let compteurStableV = 0
     let compteurStableB = 0
     let compteurStableJ = 0
-
-    // vision chiffres
     let confianceMinNombre = 0.4
     let dernierNombre = 0
     let compteurNombreStable = 0
-
-    // bras/pince classique (servos 5 et 6)
     let BRAS_HAUT = -60
     let BRAS_BAS = -5
     let PINCE_OUVERTE = 15
     let PINCE_FERMEE = -25
     let TEMPS_MOUVEMENT = 500
     let TEMPS_ATTENTE = 800
-
-    // bras 3 axes pédagogique (servos 1, 2, 3)
     let BRAS3_DUREE = 1500
-
-    // mission
-    // 0 = recherche/ramassage, 1 = transport (porte un cube)
     let modeMission = 0
-
-    // =========================================================
-    // OUTILS INTERNES
-    // =========================================================
 
     function resetStabilites(): void {
         compteurStableR = 0
@@ -83,30 +61,25 @@ namespace msmSmartTools {
 
     function detectionStableId(id: number, seuil: number): boolean {
         let compteur = 0
-
         if (id == 1) compteur = compteurStableR
         else if (id == 2) compteur = compteurStableV
         else if (id == 3) compteur = compteurStableB
         else if (id == 4) compteur = compteurStableJ
         else compteur = 0
-
         if (wondercam.isDetectedColorId(id) && xDansFenetre(id)) {
             compteur += 1
         } else {
             compteur = 0
         }
-
         let ok = false
         if (compteur > seuil) {
             compteur = 0
             ok = true
         }
-
         if (id == 1) compteurStableR = compteur
         else if (id == 2) compteurStableV = compteur
         else if (id == 3) compteurStableB = compteur
         else if (id == 4) compteurStableJ = compteur
-
         return ok
     }
 
@@ -122,7 +95,6 @@ namespace msmSmartTools {
     function nombreValideEtStableInterne(n: number, seuil: number): boolean {
         if (confianceNombre() >= confianceMinNombre) {
             let lu = nombreReconnu()
-
             if (lu == n) {
                 if (dernierNombre == n) {
                     compteurNombreStable += 1
@@ -130,7 +102,6 @@ namespace msmSmartTools {
                     dernierNombre = n
                     compteurNombreStable = 1
                 }
-
                 if (compteurNombreStable >= seuil) {
                     resetNombres()
                     return true
@@ -141,13 +112,8 @@ namespace msmSmartTools {
         } else {
             resetNombres()
         }
-
         return false
     }
-
-    // =========================================================
-    // INIT
-    // =========================================================
 
     //% block="initialiser le robot"
     //% group="Init"
@@ -175,10 +141,6 @@ namespace msmSmartTools {
         wondercam.ChangeFunc(wondercam.Functions.NumberRecognition)
         resetNombres()
     }
-
-    // =========================================================
-    // RÉGLAGES
-    // =========================================================
 
     //% block="régler vitesses | tout droit %vTD | correction %vC | petite %vP"
     //% group="Réglages"
@@ -235,10 +197,6 @@ namespace msmSmartTools {
         resetNombres()
     }
 
-    // =========================================================
-    // GETTERS
-    // =========================================================
-
     //% block="ID du cube"
     //% group="Réglages"
     export function ID_CUBE_get(): number { return ID_CUBE }
@@ -255,17 +213,13 @@ namespace msmSmartTools {
     //% group="Réglages"
     export function confianceMiniNombre_get(): number { return confianceMinNombre }
 
-    // =========================================================
-    // CAPTEURS LIGNE
-    // =========================================================
-
     //% block="mettre à jour les capteurs de ligne"
     //% group="Capteurs ligne"
     export function mettreAJourCapteursLigne(): void {
-        capteur1 = dadabit.line_followers(dadabit.LineFollowerSensors.S1, dadabit.LineColor.Black)
-        capteur2 = dadabit.line_followers(dadabit.LineFollowerSensors.S2, dadabit.LineColor.Black)
-        capteur3 = dadabit.line_followers(dadabit.LineFollowerSensors.S3, dadabit.LineColor.Black)
-        capteur4 = dadabit.line_followers(dadabit.LineFollowerSensors.S4, dadabit.LineColor.Black)
+        capteur1 = dadabit.line_followers(dadabit.LineFollowerSensors.S1, dadabit.TrackbitType.State_1)
+        capteur2 = dadabit.line_followers(dadabit.LineFollowerSensors.S2, dadabit.TrackbitType.State_1)
+        capteur3 = dadabit.line_followers(dadabit.LineFollowerSensors.S3, dadabit.TrackbitType.State_1)
+        capteur4 = dadabit.line_followers(dadabit.LineFollowerSensors.S4, dadabit.TrackbitType.State_1)
     }
 
     //% block="arrivée détectée ? (S1 S2 S3 S4 sur noir)"
@@ -273,10 +227,6 @@ namespace msmSmartTools {
     export function arriveeDetectee(): boolean {
         return capteur1 && capteur2 && capteur3 && capteur4
     }
-
-    // =========================================================
-    // MOUVEMENTS
-    // =========================================================
 
     //% block="avancer à vitesse %v"
     //% group="Mouvements"
@@ -323,10 +273,6 @@ namespace msmSmartTools {
         dadabit.setLego360Servo(4, dadabit.Oriention.Counterclockwise, v)
     }
 
-    // =========================================================
-    // SUIVI DE LIGNE
-    // =========================================================
-
     //% block="suivre la ligne"
     //% group="Suivi de ligne"
     export function suiviDeLigne(): void {
@@ -354,10 +300,6 @@ namespace msmSmartTools {
             avancer(petiteVitesse)
         }
     }
-
-    // =========================================================
-    // VISION (couleur)
-    // =========================================================
 
     //% block="mettre à jour la caméra"
     //% group="Vision (couleur)"
@@ -424,27 +366,19 @@ namespace msmSmartTools {
 
     //% block="approcher le cube rouge"
     //% group="Vision (couleur)"
-    export function approcherRouge(): void {
-        approcherId(1)
-    }
+    export function approcherRouge(): void { approcherId(1) }
 
     //% block="approcher le cube vert"
     //% group="Vision (couleur)"
-    export function approcherVert(): void {
-        approcherId(2)
-    }
+    export function approcherVert(): void { approcherId(2) }
 
     //% block="approcher le cube bleu"
     //% group="Vision (couleur)"
-    export function approcherBleu(): void {
-        approcherId(3)
-    }
+    export function approcherBleu(): void { approcherId(3) }
 
     //% block="approcher le cube jaune"
     //% group="Vision (couleur)"
-    export function approcherJaune(): void {
-        approcherId(4)
-    }
+    export function approcherJaune(): void { approcherId(4) }
 
     //% block="cube détecté de façon stable ?"
     //% group="Vision (couleur)"
@@ -454,13 +388,7 @@ namespace msmSmartTools {
 
     //% block="approcher le cube (jusqu'à Y d'approche)"
     //% group="Vision (couleur)"
-    export function approcherCube(): void {
-        approcherId(ID_CUBE)
-    }
-
-    // =========================================================
-    // VISION (chiffres)
-    // =========================================================
+    export function approcherCube(): void { approcherId(ID_CUBE) }
 
     //% block="nombre reconnu"
     //% group="Vision (chiffres)"
@@ -492,9 +420,7 @@ namespace msmSmartTools {
         resetNombres()
         while (true) {
             mettreAJourCamera()
-            if (nombreValideEtStableInterne(n, seuil)) {
-                break
-            }
+            if (nombreValideEtStableInterne(n, seuil)) { break }
             basic.pause(50)
         }
     }
@@ -505,10 +431,8 @@ namespace msmSmartTools {
         resetNombres()
         while (true) {
             mettreAJourCamera()
-
             if (confianceNombre() >= confianceMinNombre) {
                 let n = nombreReconnu()
-
                 if (n == 1 || n == 2) {
                     if (n == dernierNombre) {
                         compteurNombreStable += 1
@@ -516,7 +440,6 @@ namespace msmSmartTools {
                         dernierNombre = n
                         compteurNombreStable = 1
                     }
-
                     if (compteurNombreStable >= seuil) {
                         let resultat = n
                         resetNombres()
@@ -528,15 +451,10 @@ namespace msmSmartTools {
             } else {
                 resetNombres()
             }
-
             basic.pause(50)
         }
         return 0
     }
-
-    // =========================================================
-    // BRAS & PINCE
-    // =========================================================
 
     //% block="bras en haut"
     //% group="Bras & Pince"
@@ -610,27 +528,19 @@ namespace msmSmartTools {
 
     //% block="aller à la position 1"
     //% group="Bras & Pince"
-    export function position1Bras3Axes(): void {
-        allerPositionBras3Axes(0, 90, -135)
-    }
+    export function position1Bras3Axes(): void { allerPositionBras3Axes(0, 90, -135) }
 
     //% block="aller à la position 2"
     //% group="Bras & Pince"
-    export function position2Bras3Axes(): void {
-        allerPositionBras3Axes(-45, 90, -135)
-    }
+    export function position2Bras3Axes(): void { allerPositionBras3Axes(-45, 90, -135) }
 
     //% block="aller à la position 3"
     //% group="Bras & Pince"
-    export function position3Bras3Axes(): void {
-        allerPositionBras3Axes(-135, 90, -135)
-    }
+    export function position3Bras3Axes(): void { allerPositionBras3Axes(-135, 90, -135) }
 
     //% block="aller à la position 4"
     //% group="Bras & Pince"
-    export function position4Bras3Axes(): void {
-        allerPositionBras3Axes(45, 90, -135)
-    }
+    export function position4Bras3Axes(): void { allerPositionBras3Axes(45, 90, -135) }
 
     //% block="revenir à la position initiale du bras"
     //% group="Bras & Pince"
@@ -655,15 +565,9 @@ namespace msmSmartTools {
         basic.pause(1000)
     }
 
-    // =========================================================
-    // MISSION
-    // =========================================================
-
     //% block="ne porte pas de cube ?"
     //% group="Mission"
-    export function nePortePasCube(): boolean {
-        return modeMission == 0
-    }
+    export function nePortePasCube(): boolean { return modeMission == 0 }
 
     //% block="bip (signal sonore)"
     //% group="Mission"
@@ -676,19 +580,13 @@ namespace msmSmartTools {
     export function destination(): void {
         arreterRobot()
         basic.pause(500)
-
-        if (modeMission == 1) {
-            deposerCube()
-        }
-
+        if (modeMission == 1) { deposerCube() }
         mettreAJourCapteursLigne()
-
         dadabit.setLego360Servo(1, dadabit.Oriention.Clockwise, vitesseCorrection)
         dadabit.setLego360Servo(2, dadabit.Oriention.Counterclockwise, vitesseCorrection)
         dadabit.setLego360Servo(3, dadabit.Oriention.Clockwise, vitesseCorrection)
         dadabit.setLego360Servo(4, dadabit.Oriention.Counterclockwise, vitesseCorrection)
         basic.pause(500)
-
         while (capteur1 || capteur2 || !(capteur3 && capteur4)) {
             corrigerADroite(vitesseCorrection)
             mettreAJourCapteursLigne()
@@ -700,18 +598,13 @@ namespace msmSmartTools {
     export function cycleMission(): void {
         mettreAJourCamera()
         mettreAJourCapteursLigne()
-
         if (modeMission == 0 && cubeDetecteStable()) {
             jouerBip()
             approcherCube()
             attraperCube()
         }
-
-        if (arriveeDetectee()) {
-            destination()
-        } else {
-            suiviDeLigne()
-        }
+        if (arriveeDetectee()) { destination() }
+        else { suiviDeLigne() }
     }
 
     //% block="traiter le cube rouge"
